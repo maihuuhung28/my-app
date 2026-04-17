@@ -12,19 +12,22 @@ import DataGrid, {
 export function ProductionPlanDetail() {
   return (
     <div className="grid-container">
-      <DataGrid
+
+    <DataGrid
         dataSource={productionPlanDetailData}
         height={450}
         showBorders
+        showRowLines
+        showColumnLines
         focusedRowEnabled
         columnAutoWidth
         wordWrapEnabled
       >
-        <Scrolling mode="standard" showScrollbar="always" />
-        <FilterRow visible />
-        <HeaderFilter visible />
-        <Selection mode="single" />
-        <Editing mode="cell" allowUpdating={true} />
+    <Scrolling mode="standard" showScrollbar="always" />
+    <FilterRow visible />
+    <HeaderFilter visible />
+    <Selection mode="single" />
+    <Editing mode="cell" allowUpdating={true} />
 
     <Column 
       dataField="line" 
