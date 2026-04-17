@@ -40,7 +40,7 @@ export default function UserPanel({ menuMode }: UserPanelProps) {
       {menuMode === 'context' && (
         <DropDownButton
             stylingMode='text'
-            icon='https://js.devexpress.com/Demos/WidgetsGallery/JSDemos/images/employees/06.png'
+            //icon='https://js.devexpress.com/Demos/WidgetsGallery/JSDemos/images/employees/06.png'
             showArrowIcon={false}
             elementAttr={dropDownButtonAttributes}
             dropDownOptions={buttonDropDownOptions}

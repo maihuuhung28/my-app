@@ -1,3 +1,4 @@
 export { Home as HomePage } from './home/home';
-export { Profile as ProfilePage } from './profile/profile';
 export { Tasks as TasksPage } from './tasks/tasks';
+import '@syncfusion/ej2-base/styles/material.css';
+import '@syncfusion/ej2-react-gantt/styles/material.css';

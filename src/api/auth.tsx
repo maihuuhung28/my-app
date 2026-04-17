@@ -1,3 +1,4 @@
+//No
 import defaultUser from '../utils/default-user';
 
 export async function signIn(email: string, password: string) {
@@ -80,7 +81,7 @@ export async function resetPassword(email: string) {
   catch {
     return {
       isOk: false,
-      message: "Failed to reset password"
+      message: "Khôi phục mật khẩu thất bại"
     };
   }
 }

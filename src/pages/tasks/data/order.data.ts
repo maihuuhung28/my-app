@@ -16,7 +16,7 @@ export interface Order {
   planStatus: string;
 }
 
-//Json data mẫu cho OrdersTable
+//Mock dữ liệu mẫu cho OrdersTable
 export const orders: Order[] = [
   {
     id: 1,
@@ -45,7 +45,7 @@ export const orders: Order[] = [
     qtyOrder: 2500,
     balQty: 2500,
     smv: 0.5161,
-    category: 'F3-TP',
+    category: 'F5-BTP',
     productType: 'VEST',
     specialNotes: 'Quilting difficult',
     materialStatus: 'DATE - NOT YET',
@@ -62,7 +62,7 @@ export const orders: Order[] = [
     qtyOrder: 2500,
     balQty: 2500,
     smv: 0.5161,
-    category: 'F3-TP',
+    category: 'F5-TP',
     productType: 'VEST',
     specialNotes: 'Quilting difficult',
     materialStatus: 'DATE - OK',
