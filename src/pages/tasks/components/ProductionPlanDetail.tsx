@@ -7,6 +7,8 @@ import DataGrid, {
   HeaderFilter,
   Selection,
   Editing,
+  Paging,
+  Pager,
 } from 'devextreme-react/data-grid';
 
 export function ProductionPlanDetail() {
@@ -16,15 +18,28 @@ export function ProductionPlanDetail() {
     <DataGrid
         dataSource={productionPlanDetailData}
         height={450}
-        showBorders
+        rowAlternationEnabled={true}
+        showBorders={true}
         showRowLines
         showColumnLines
         focusedRowEnabled
         columnAutoWidth
         wordWrapEnabled
       >
+ 
     <Scrolling mode="standard" showScrollbar="always" />
-    <FilterRow visible />
+
+    <Paging defaultPageSize={10}/>
+    <Pager
+    visible={true}
+    displayMode="full"
+    showPageSizeSelector={true}
+    //allowedPageSizes={[1,2,]}
+    showInfo={true}
+    showNavigationButtons={true}
+    />
+
+    <FilterRow visible = {false}/>
     <HeaderFilter visible />
     <Selection mode="single" />
     <Editing mode="cell" allowUpdating={true} />
@@ -32,7 +47,7 @@ export function ProductionPlanDetail() {
     <Column 
       dataField="line" 
       caption="LINE" 
-      width={80} 
+      width={100} 
       allowEditing={false} 
     />
     
@@ -60,7 +75,7 @@ export function ProductionPlanDetail() {
     <Column 
       dataField="category" 
       caption="Category" 
-      width={100} 
+      width={110} 
       allowEditing={true} 
     />
     
