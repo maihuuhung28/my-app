@@ -17,14 +17,14 @@ export interface Order {
   eta: string;
   planStatus: string;
 
-  // === Các trường hỗ trợ cho Bảng 2 (Gantt) ===
+  // trường hỗ trợ cho Bảng 2
   earliestStartDate?: string;
   groupedBy?: string;
   sewingLineType?: string;
   qvtDate?: string;
 }
 
-// Mock data - 10 dòng
+// Mock data
 export const orders: Order[] = [
   {
     id: 1,
