@@ -22,19 +22,20 @@ export function ProductionPlanDetail() {
         showBorders={true}
         showRowLines
         showColumnLines
-        focusedRowEnabled
+        focusedRowEnabled={false}
         columnAutoWidth
         wordWrapEnabled
       >
  
     <Scrolling mode="standard" showScrollbar="always" />
 
+
     <Paging defaultPageSize={10}/>
     <Pager
     visible={true}
     displayMode="full"
     showPageSizeSelector={true}
-    //allowedPageSizes={[1,2,]}
+    //allowedPageSizes={[1,2,3,4]}
     showInfo={true}
     showNavigationButtons={true}
     />
@@ -48,10 +49,10 @@ export function ProductionPlanDetail() {
       dataField="line" 
       caption="LINE" 
       width={100} 
-      allowEditing={false} 
+      allowEditing={false}
     />
     
-    <Column 
+    <Column
       dataField="season" 
       caption="Season" 
       width={100} 
@@ -102,7 +103,7 @@ export function ProductionPlanDetail() {
       caption="Target" 
       dataType="number" 
       format="#,##0" 
-      width={100} 
+      width={110} 
       allowEditing={true} 
     />
     
@@ -117,7 +118,7 @@ export function ProductionPlanDetail() {
     <Column 
       dataField="conversionTime" 
       caption="Conversion time" 
-      width={130} 
+      width={160} 
       allowEditing={true} 
     />
     
@@ -144,7 +145,7 @@ export function ProductionPlanDetail() {
       caption="Actual offline date" 
       dataType="date" 
       format="dd/MM/yyyy" 
-      width={160} 
+      width={170} 
       allowEditing={true} 
     />
     
@@ -152,8 +153,8 @@ export function ProductionPlanDetail() {
       dataField="finalOfflineDate" 
       caption="Final offline date" 
       dataType="date" 
-      format="dd/MM/yyyy" 
-      width={150} 
+      format="dd/MM/yyyy"  
+      width={170} 
       allowEditing={false} 
     />
     

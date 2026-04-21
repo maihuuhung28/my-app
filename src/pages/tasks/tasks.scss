@@ -4,25 +4,34 @@
 
 .tasks-page {
   padding: 16px;
-  background-color: #fcfcfc;
+  background-color: #ffffff;
 
   .page-title {
-    font-size: 14px;
-    font-weight: 700;
-    margin-bottom: 12px;
+    font-size: 32px;
+    font-weight: 300;
+    margin-bottom: 20px;
     color: #2c3e50;
     text-transform: uppercase;
   }
 
   .grid-container {
-    margin-top: 10px;
+    margin-top: 0px; //10
     background: #ffffff;
     box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
     border-radius: 4px;
   }
 
-  // Cấu hình chung cho các loại Grid của DevExtreme
+  // Cấu hình chung cho các loại Datagrid
   .dx-datagrid {
+    .dx-data-rowsview {
+      .dx-row:nth-child(odd){
+        background-color: #ffffff;
+      }
+
+      .dx-row:nth-child(even) {
+        background-color: #ffffff;
+      }
+    }
     .dx-datagrid-headers {
       .dx-header-row .dx-datagrid-text-content {
         text-align: center;
@@ -43,7 +52,7 @@
 
     .dx-column-fixed {
       background-color: #ffffff;
-      box-shadow: 2px 0 4px rgba(0, 0, 0, 0.04);
+      //box-shadow: 2px 0 4px rgba(0, 0, 0, 0.04);
     }
   }
 
@@ -53,7 +62,7 @@
   .orders-table {
     .dx-datagrid-headers {
       .dx-header-row:first-child {
-        background-color: #f4f6f8;
+        background-color: #ffffff;
         .dx-datagrid-text-content { font-size: 16px; font-weight: 500; color: #2c3e50; }
       }
       .dx-header-row:last-child {
@@ -80,7 +89,6 @@
     white-space: nowrap;
     border: 1px solid transparent;
 
-    // Màu sắc cho từng trạng thái nhãn
     //Nhãn màu xanh lá cây cho "Already"
     &.status-already { background-color: #e4f3e4 !important; color: #4d8a4d !important; border-color: #d0e8d0; }
     //Nhãn màu vàng nhạt cho "Partial"
@@ -89,8 +97,9 @@
     &.status-notyet { background-color: #f9e2e2 !important; color: #b84d4d !important; border-color: #f1cccc; }
   }
 
-
-  //BẢNG 2 - PLANNINGTABLE
+  ///////////////////////////////////////////////////////////////
+  //BẢNG 2 - LineSchedule
+  ///////////////////////////////////////////////////////////////
 .planning-gantt {
     border: 1px solid #ddd;
     border-radius: 4px;
@@ -106,17 +115,16 @@
     }
 
     .dx-gantt-task-bar-container {
-      padding: 0 !important; // Xóa khoảng trắng giữa các hàng để dải màu dính sát nhau
+      padding: 0 !important; 
     }
 
-    // Class từ taskContentTemplate trong file React
     .custom-task-bar {
       transition: filter 0.2s ease;
       &:hover {
         filter: brightness(0.9);
       }
       span {
-        pointer-events: none; // Đảm bảo không lỗi khi kéo thả
+        pointer-events: none;
       }
     }
 
@@ -128,7 +136,7 @@
         font-weight: bold;
       }
       .dx-data-row {
-        height: 38px !important; // Độ cao dòng chuẩn cho dễ nhìn
+        height: 38px !important; 
         td {
           padding: 0 10px !important;
           vertical-align: middle !important;
@@ -137,7 +145,7 @@
       }
     }
 
-    // Header Timeline (Phần ngày tháng phía trên)
+    // Header Timeline
     .dx-gantt-ts-header {
       .dx-gantt-ts-cell {
         font-weight: bold;
@@ -146,7 +154,6 @@
       }
     }
 
-    // Xóa các icon rườm rà của DevExtreme
     .dx-gantt-task-edit-frame, 
     .dx-gantt-antialiasing,
     .dx-gantt-connector-line {
@@ -155,14 +162,66 @@
   }
 }
 
+///////////////////////////////////////////////////////////////
+// BẢNG 3 - PRODUCTION PLAN DETAIL
+///////////////////////////////////////////////////////////////
+.production-plan-detail {
+  .dx-datagrid {
+    .dx-header-row {
+      background-color: #f8f9fa !important;
+      
+      .dx-datagrid-text-content {
+        font-size: 13.5px;
+        font-weight: 600;
+        color: #2c3e50;
+        text-align: center;
+        padding: 10px 8px;
+      }
+    }
+
+    .dx-data-row td {
+      font-size: 13px;
+      padding: 9px 8px;
+      vertical-align: middle;
+    }
+
+    .dx-cell-disabled {
+      background-color: #f9f9f9 !important;
+      color: #555;
+    }
+
+    // Highlight cột
+    .dx-data-row td:nth-child(6),  /* Duty Qty */
+    .dx-data-row td:nth-child(7),  /* Target */
+    .dx-data-row td:nth-child(8),  /* production days */
+    .dx-data-row td:nth-child(10), /* Inline date */
+    .dx-data-row td:nth-child(12)  /* Actual offline date */
+    {
+      background-color: #fffef0 !important;
+      font-weight: 500;
+    }
+
+    .dx-datagrid .dx-column[data-field="inlineDate"],
+    .dx-datagrid .dx-column[data-field="estOfflineDate"],
+    .dx-datagrid .dx-column[data-field="actualOfflineDate"],
+    .dx-datagrid .dx-column[data-field="qvtDate"] {
+      .dx-datagrid-text-content {
+        font-weight: 600;
+        color: #2c3e50;
+      }
+    }
+  }
+}
+
 //CUSTOM SCROLLBAR
 ::-webkit-scrollbar {
-  width: 8px;
-  height: 8px;
+  width: 16px;
+  height: 16px;
 }
+
 ::-webkit-scrollbar-track { background: transparent; }
 ::-webkit-scrollbar-thumb {
   background: #dcdde1;
-  border-radius: 10px;
+  border-radius: 16px;
   &:hover { background: #b2bec3; }
 }

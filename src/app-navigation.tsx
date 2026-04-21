@@ -5,7 +5,7 @@ export const navigation = [
    // icon: 'home'
   //},
   {
-    text: 'Production Plan Simulation',
+    text: 'UI',
     icon: 'folder',
     items: [
       {

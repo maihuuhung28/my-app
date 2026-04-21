@@ -1,5 +1,5 @@
 const appInfo = {
-    title: 'Production Plan Simulation',
+    title: 'PLAN UI',
 };
 export default appInfo;
 

@@ -2,9 +2,7 @@ import React from 'react';
 import DataGrid, {
   Column,
   Scrolling,
-  FilterRow,
   HeaderFilter,
-  ColumnChooser,
   Selection,
 } from 'devextreme-react/data-grid';
 
@@ -16,21 +14,21 @@ interface Props {
 
 export function OrdersTable({ onSelectOrder }: Props) {
   
-  // Logic tính toán ngày bắt đầu sớm nhất dựa trên Special Notes
   const calculateEarliestStart = (data: any) => {
     if (!data?.eta) return null;
 
     const etaDate = new Date(data.eta);
-    let daysToAdd = 6; // Mặc định là 6 ngày
+    let daysToAdd = 6; // Mặc định 6 ngày (T2 -> T7)
 
     const notes = data.specialNotes || '';
-    if (notes.includes('Print/EMB difficult') || notes.includes('Quilting difficult')) {
+    if (notes.includes('Print/EMB difficult') || notes.includes('Quilting difficult')) { 
       daysToAdd = 19;
     } else if (notes.includes('Print/EMB')) {
       daysToAdd = 12;
     } 
 
     etaDate.setDate(etaDate.getDate() + daysToAdd);
+
     return etaDate;
   };
 
@@ -40,17 +38,15 @@ export function OrdersTable({ onSelectOrder }: Props) {
         dataSource={orders}
         height={450}
         showBorders
-        focusedRowEnabled
+        focusedRowEnabled={false}
         columnAutoWidth
         wordWrapEnabled
         onRowClick={(e) => onSelectOrder?.(e.data)}
       >
         
         <Scrolling mode="standard" showScrollbar="always" />
-        <FilterRow visible />
-        <HeaderFilter visible />
+        <HeaderFilter visible = {false}/>
         <Selection mode="single" />
-        <ColumnChooser enabled />
 
         {/* CÁC CỘT THÔNG TIN ĐƠN HÀNG */}
         <Column caption="Thông tin đơn hàng">
@@ -63,7 +59,7 @@ export function OrdersTable({ onSelectOrder }: Props) {
             caption="First CRD" 
             dataType="date" 
             format="dd/MM/yyyy" 
-            width={130} 
+            width={120}  
           />
           <Column 
             dataField="qtyOrder" 
@@ -72,21 +68,22 @@ export function OrdersTable({ onSelectOrder }: Props) {
             format="#,##0" 
             width={120} 
           />
-          <Column dataField="balqty" caption="Bal Qty" width={160} />
+          <Column dataField="balqty" caption="Bal Qty" width={110} />
           <Column dataField="smv" caption="SMV" width={160} />
-          <Column dataField="category" caption="Category" width={160} />
+          <Column dataField="category" caption="Category" width={180} />
           <Column dataField="productType" caption="Product Type" width={160} />
           <Column dataField="specialNotes" caption="Special Notes" width={160} />
         </Column>
 
-        {/* CÁC CỘT TÌNH TRẠNG NGUYÊN PHỤ LIỆU */}
-        <Column caption="Tình trạng Nguyên phụ liệu">
+        {/*MỤC TÌNH TRẠNG NGUYÊN PHỤ LIỆU */}
+        <Column caption="Tình trạng Nguyên Phụ Liệu">
           <Column 
             dataField="materialStatus" 
             caption="Status Material" 
             width={160} 
             cellRender={(d) => (
               <span style={{ 
+                                                //Xanh: Date-ok, Đỏ: Date-Not Yet
                 color: d.value === 'DATE - OK' ? '#27ae60' : '#e74c3c', 
                 fontWeight: 'bold' 
               }}>
@@ -112,7 +109,7 @@ export function OrdersTable({ onSelectOrder }: Props) {
           />
         </Column>
 
-        {/*Plan Status*/}
+        {/*Trạng thái kế hoạch/Plan Status*/}
         <Column 
           dataField="planStatus" 
           caption="Plan Status" 
@@ -124,7 +121,7 @@ export function OrdersTable({ onSelectOrder }: Props) {
             const value = data.value || '';
             let statusClass = "status-notyet";
 
-            // Logic chọn Class dựa trên giá trị dữ liệu
+            // Chọn Class dựa trên giá trị dữ liệu
             if (value === 'Already have') {
               statusClass = "status-already";
 

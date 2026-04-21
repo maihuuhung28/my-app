@@ -31,7 +31,7 @@ export function LineSchedule({ selectedOrder }: Props) {
         <Column dataField="linetype" caption="Line Type" width={140} />
         <Column dataField="start" caption="Ngày bắt đầu" dataType="date" format="dd/MM/yyyy" />
         <Column dataField="end" caption="Ngày kết thúc" dataType="date" format="dd/MM/yyyy" />
-        <Column dataField="progress" caption="Tiến độ (%)" />
+        <Column dataField="progress" caption="Tiến độ" />
 
         <Editing enabled={true} />
 
