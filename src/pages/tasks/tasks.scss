@@ -1,37 +1,60 @@
 ///////////////////////////////////////////////////////////////
-//GIAO DIỆN CHUNG
+// GIAO DIỆN CHUNG
 ///////////////////////////////////////////////////////////////
 
 .tasks-page {
   padding: 16px;
   background-color: #ffffff;
 
+  // Tiêu đề trang
   .page-title {
-    font-size: 32px;
+    font-size: 64px;
     font-weight: 300;
     margin-bottom: 20px;
     color: #2c3e50;
     text-transform: uppercase;
   }
 
-  .grid-container {
-    margin-top: 0px; //10
-    background: #ffffff;
-    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
-    border-radius: 4px;
+  ///////////////////////////////////////////////////////////////
+  // KHỐI EXCEL CHUNG: BẢNG 1 + BẢNG 2
+  ///////////////////////////////////////////////////////////////
+  .excel-block {
+    background-color: #ffffff;
+    border: 1px solid #dcdcdc;
+    padding: 8px;
+    margin-bottom: 12px;
   }
 
-  // Cấu hình chung cho các loại Datagrid
+  ///////////////////////////////////////////////////////////////
+  // LAYOUT DẠNG EXCEL (XẾP DỌC)
+  ///////////////////////////////////////////////////////////////
+  .two-column-layout {
+    display: flex;
+    flex-direction: column; // ❗ Excel / Word style
+    gap: 12px;
+  }
+
+  ///////////////////////////////////////////////////////////////
+  // PANEL CON (KHÔNG VIỀN – DÍNH NHAU)
+  ///////////////////////////////////////////////////////////////
+  .left-panel,
+  .right-panel {
+    background-color: #ffffff;
+    border: none;     // ❗ bỏ viền card
+    padding: 0;       // ❗ dính bảng như Excel
+  }
+
+  ///////////////////////////////////////////////////////////////
+  // CẤU HÌNH CHUNG CHO DATAGRID
+  ///////////////////////////////////////////////////////////////
   .dx-datagrid {
     .dx-data-rowsview {
-      .dx-row:nth-child(odd){
-        background-color: #ffffff;
-      }
-
+      .dx-row:nth-child(odd),
       .dx-row:nth-child(even) {
         background-color: #ffffff;
       }
     }
+
     .dx-datagrid-headers {
       .dx-header-row .dx-datagrid-text-content {
         text-align: center;
@@ -45,98 +68,131 @@
         font-size: 13px;
         padding: 8px 10px;
         vertical-align: middle !important;
-        text-align: center; 
+        text-align: left;
       }
-      .dx-data-row:hover { background-color: #f5f9ff; }
+
+      .dx-data-row:hover {
+        background-color: #f5f9ff;
+      }
     }
 
     .dx-column-fixed {
       background-color: #ffffff;
-      //box-shadow: 2px 0 4px rgba(0, 0, 0, 0.04);
     }
   }
 
   ///////////////////////////////////////////////////////////////
-  //BẢNG 1 - ORDERS TABLE
+  // BẢNG 1 - ORDERS TABLE
   ///////////////////////////////////////////////////////////////
   .orders-table {
+    border-bottom: 1px solid #e0e0e0; // ❗ ngăn cách với bảng 2
+    padding-bottom: 8px;
+    margin-bottom: 8px;
+
     .dx-datagrid-headers {
       .dx-header-row:first-child {
         background-color: #ffffff;
-        .dx-datagrid-text-content { font-size: 16px; font-weight: 500; color: #2c3e50; }
+
+        .dx-datagrid-text-content {
+          font-size: 16px;
+          font-weight: 500;
+          color: #2c3e50;
+        }
       }
+
       .dx-header-row:last-child {
         background-color: #ffffff;
-        .dx-datagrid-text-content { font-size: 14px; font-weight: 600; text-align: left; color: #34495e; }
+
+        .dx-datagrid-text-content {
+          font-size: 14px;
+          font-weight: 600;
+          text-align: left;
+          color: #34495e;
+        }
       }
     }
+
     .highlight-date-column {
       font-weight: bold !important;
       color: #ffae00 !important;
-      background-color: #fffdf2;  
+      background-color: #fffdf2;
     }
   }
 
-  // Status Badges cho Bảng 1
+  // STATUS BADGES - (BẢNG 1)
+
   .status-badge {
     display: inline-block;
     padding: 6px 12px;
     border-radius: 4px;
     font-size: 12px;
     font-weight: 700;
-    width: 100%;          
+    width: 100%;
     text-align: left;
     white-space: nowrap;
     border: 1px solid transparent;
 
-    //Nhãn màu xanh lá cây cho "Already"
-    &.status-already { background-color: #e4f3e4 !important; color: #4d8a4d !important; border-color: #d0e8d0; }
-    //Nhãn màu vàng nhạt cho "Partial"
-    &.status-partial { background-color: #fff8e1 !important; color: #856404 !important; border-color: #ffecb5; }
-    //Nhãn màu đỏ nhạt cho "Not yet"
-    &.status-notyet { background-color: #f9e2e2 !important; color: #b84d4d !important; border-color: #f1cccc; }
+    &.status-already {
+      background-color: #e4f3e4 !important;
+      color: #4d8a4d !important;
+      border-color: #d0e8d0;
+    }
+
+    &.status-partial {
+      background-color: #fff8e1 !important;
+      color: #856404 !important;
+      border-color: #ffecb5;
+    }
+
+    &.status-notyet {
+      background-color: #f9e2e2 !important;
+      color: #b84d4d !important;
+      border-color: #f1cccc;
+    }
   }
 
-  ///////////////////////////////////////////////////////////////
-  //BẢNG 2 - LineSchedule
-  ///////////////////////////////////////////////////////////////
-.planning-gantt {
+
+  // BẢNG 2 - LINE SCHEDULE (GANTT)
+
+  .planning-gantt {
     border: 1px solid #ddd;
     border-radius: 4px;
     background-color: #fff;
-    margin-top: 15px;
+    margin-top: 12px;
     overflow: hidden;
 
-    // Ép các thanh dải màu phẳng và khít (giống Excel)s
     .dx-gantt-task-bar {
-      border-radius: 0 !important; 
+      border-radius: 0 !important;
       box-shadow: none !important;
       background-color: transparent !important;
     }
 
     .dx-gantt-task-bar-container {
-      padding: 0 !important; 
+      padding: 0 !important;
     }
 
     .custom-task-bar {
       transition: filter 0.2s ease;
+
       &:hover {
         filter: brightness(0.9);
       }
+
       span {
         pointer-events: none;
       }
     }
 
-    // Chỉnh bảng danh sách bên trái (PRI Line, LINE, Line Type)
     .dx-gantt-treelist {
       .dx-header-row {
         background-color: #f4f6f8 !important;
         color: #333;
         font-weight: bold;
       }
+
       .dx-data-row {
-        height: 38px !important; 
+        height: 38px !important;
+
         td {
           padding: 0 10px !important;
           vertical-align: middle !important;
@@ -145,7 +201,6 @@
       }
     }
 
-    // Header Timeline
     .dx-gantt-ts-header {
       .dx-gantt-ts-cell {
         font-weight: bold;
@@ -154,7 +209,7 @@
       }
     }
 
-    .dx-gantt-task-edit-frame, 
+    .dx-gantt-task-edit-frame,
     .dx-gantt-antialiasing,
     .dx-gantt-connector-line {
       display: none !important;
@@ -162,19 +217,23 @@
   }
 }
 
-///////////////////////////////////////////////////////////////
+
 // BẢNG 3 - PRODUCTION PLAN DETAIL
-///////////////////////////////////////////////////////////////
+
 .production-plan-detail {
+  border: 1px solid #dcdcdc;
+  background-color: #ffffff;
+  padding: 8px;
+
   .dx-datagrid {
     .dx-header-row {
       background-color: #f8f9fa !important;
-      
+
       .dx-datagrid-text-content {
         font-size: 13.5px;
         font-weight: 600;
         color: #2c3e50;
-        text-align: center;
+        text-align: left;
         padding: 10px 8px;
       }
     }
@@ -190,38 +249,33 @@
       color: #555;
     }
 
-    // Highlight cột
-    .dx-data-row td:nth-child(6),  /* Duty Qty */
-    .dx-data-row td:nth-child(7),  /* Target */
-    .dx-data-row td:nth-child(8),  /* production days */
-    .dx-data-row td:nth-child(10), /* Inline date */
-    .dx-data-row td:nth-child(12)  /* Actual offline date */
-    {
+    .dx-data-row td:nth-child(6),
+    .dx-data-row td:nth-child(7),
+    .dx-data-row td:nth-child(8),
+    .dx-data-row td:nth-child(10),
+    .dx-data-row td:nth-child(12) {
       background-color: #fffef0 !important;
       font-weight: 500;
-    }
-
-    .dx-datagrid .dx-column[data-field="inlineDate"],
-    .dx-datagrid .dx-column[data-field="estOfflineDate"],
-    .dx-datagrid .dx-column[data-field="actualOfflineDate"],
-    .dx-datagrid .dx-column[data-field="qvtDate"] {
-      .dx-datagrid-text-content {
-        font-weight: 600;
-        color: #2c3e50;
-      }
     }
   }
 }
 
-//CUSTOM SCROLLBAR
+
+// CUSTOM SCROLLBAR
 ::-webkit-scrollbar {
   width: 16px;
   height: 16px;
 }
 
-::-webkit-scrollbar-track { background: transparent; }
+::-webkit-scrollbar-track {
+  background: transparent;
+}
+
 ::-webkit-scrollbar-thumb {
   background: #dcdde1;
   border-radius: 16px;
-  &:hover { background: #b2bec3; }
+
+  &:hover {
+    background: #b2bec3;
+  }
 }
