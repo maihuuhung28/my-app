@@ -58,21 +58,23 @@ export function OrdersTable({ onSelectOrder }: Props) {
             dataField="firstCrd" 
             caption="First CRD" 
             dataType="date" 
-            format="dd/MM/yyyy" 
-            width={120}  
+            format="dd/MM/yyyy"   
           />
+          
           <Column 
             dataField="qtyOrder" 
             caption="Qty Order" 
             dataType="number" 
             format="#,##0" 
-            width={120} 
+            width={120}
+            alignment="left" 
           />
-          <Column dataField="balqty" caption="Bal Qty" width={110} />
-          <Column dataField="smv" caption="SMV" width={160} />
-          <Column dataField="category" caption="Category" width={180} />
-          <Column dataField="productType" caption="Product Type" width={160} />
-          <Column dataField="specialNotes" caption="Special Notes" width={160} />
+
+          <Column dataField="balQty" caption="Bal Qty" width={110} alignment="left" />
+          <Column dataField="smv" caption="SMV" width={160} alignment="left" />
+          <Column dataField="category" caption="Category" width={180} alignment="left" />
+          <Column dataField="productType" caption="Product Type" width={160} alignment="left" />
+          <Column dataField="specialNotes" caption="Special Notes" width={160} alignment="left"/>
         </Column>
 
         {/*MỤC TÌNH TRẠNG NGUYÊN PHỤ LIỆU */}
@@ -86,10 +88,13 @@ export function OrdersTable({ onSelectOrder }: Props) {
                                                 //Xanh: Date-ok, Đỏ: Date-Not Yet
                 color: d.value === 'DATE - OK' ? '#27ae60' : '#e74c3c', 
                 fontWeight: 'bold' 
-              }}>
+              }}
+              >
                 {d.value}
               </span>
             )}
+
+
           />
           <Column 
             dataField="eta" 
@@ -110,8 +115,8 @@ export function OrdersTable({ onSelectOrder }: Props) {
         </Column>
 
         {/*Trạng thái kế hoạch/Plan Status*/}
-        <Column 
-          dataField="planStatus" 
+        <Column
+          dataField="planStatus"
           caption="Plan Status" 
           fixed={true}
           fixedPosition="right" 
