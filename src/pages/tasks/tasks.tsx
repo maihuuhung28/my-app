@@ -12,22 +12,18 @@ export function Tasks() {
     <div className="tasks-page">
       <h2 className="page-title">CÔNG CỤ KẾ HOẠCH SẢN XUẤT (UI TEST)</h2>
 
-      {/* Bảng 1 và Bảng 2 nằm kế bên nhau */}
+      {/* Bảng 1 + Bảng 2 */}
       <div className="two-column-layout">
-        
-        {/* Bảng 1 bên trái */}
         <div className="left-panel">
-
           <OrdersTable onSelectOrder={setSelectedOrder} />
         </div>
 
-        {/* Bảng 2 bên phải */}
         <div className="right-panel">
           <LineSchedule selectedOrder={selectedOrder} />
         </div>
       </div>
 
-      {/* Bảng 3 ở dưới */}
+      {/* Bảng 3 */}
       <div className="section">
         <ProductionPlanDetail />
       </div>
