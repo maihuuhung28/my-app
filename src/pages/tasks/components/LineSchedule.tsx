@@ -1,49 +1,79 @@
 import React from 'react';
-import Gantt, {  Tasks, Dependencies, Resources, ResourceAssignments, Column, Editing, Toolbar, Item, Validation } from 'devextreme-react/gantt';
+import DataGrid, { Column, Selection, FilterRow, HeaderFilter } from 'devextreme-react/data-grid';
+import DateBox from 'devextreme-react/date-box';
+import Gantt, { Tasks } from 'devextreme-react/gantt';
+import { lineScheduleData, ganttTasks } from '../data/LineSchedule.data';
 
-import { ganttTasks } from '../data/gantt.data';
+interface LineScheduleProps {selectedOrder: any;}
 
-interface Props {
-  selectedOrder?: any;
-}
-
-export function LineSchedule({ selectedOrder }: Props) {
+export function LineSchedule({selectedOrder}: LineScheduleProps) {
   return (
-    <div className="gantt-container">
-      <h3></h3>
-
-      {!selectedOrder && (
-        <div className="no-selection-message">
-        </div>
-      )}
-
-      <Gantt
-        taskListWidth={380}
-        height={550}
-        scaleType="days"
-        showResources={false}
-        showDependencies={false}
+    <div style={{ padding: 16 }}>
+      <div
+        style={{
+          display: 'flex',
+          gap: 12,
+          marginBottom: 12,
+          alignItems: 'flex-end',
+        }}
       >
-        <Tasks dataSource={ganttTasks} />
+        <DateBox type="date" label="Inline" />
+        <DateBox type="date" label="Offline" />
+      </div>
 
-        <Column dataField="Priline" caption="PRI Line" width={140} />
-        <Column dataField="line" caption="Line" width={140} />
-        <Column dataField="linetype" caption="Line Type" width={140} />
-        <Column dataField="start" caption="Ngày bắt đầu" dataType="date" format="dd/MM/yyyy" />
-        <Column dataField="end" caption="Ngày kết thúc" dataType="date" format="dd/MM/yyyy" />
-        <Column dataField="progress" caption="Tiến độ" />
+      {/* GRID + GANTT */}
+      <div style={{ display: 'flex', gap: 12 }}>
+        {/* LEFT: DATAGRID */}
+        <div style={{ flex: 1 }}>
+          <DataGrid
+            dataSource={lineScheduleData}
+            keyExpr="id"
+            showBorders
+            columnAutoWidth
+            height={350}
+          >
+            <Selection mode="multiple" />
 
-        <Editing enabled={true} />
+            <Column dataField="priLine" caption="PRI Line" />
+            <Column dataField="line" caption="Line" />
+            <Column dataField="lineType" caption="Line Type" />
 
-        <Toolbar>
-          <Item name="zoomIn" />
-          <Item name="zoomOut" />
-          <Item name="undo" />
-          <Item name="redo" />
-        </Toolbar>
+            <Column
+              caption="Summary"
+              cellRender={(cell) => {
+                const d = cell.data;
+                return `${d.style}-${d.buy}-${d.season}`;
+              }}
+            />
 
+            <Column
+              dataField="inline"
+              caption="Inline"
+              dataType="date"
+              format="dd/MM/yyyy"
+            />
+            <Column
+              dataField="offline"
+              caption="Offline"
+              dataType="date"
+              format="dd/MM/yyyy"
+            />
+          </DataGrid>
+        </div>
 
-      </Gantt>
+        {/* RIGHT: GANTT */}
+        <div style={{ flex: 2 }}>
+          <Gantt
+            height={350}
+            scaleType="days"
+            taskListWidth={10}
+            showDependencies={false}
+            showResources={false}
+          >
+            <Tasks dataSource={ganttTasks} />
+          </Gantt>
+        </div>
+      </div>
     </div>
   );
 }
