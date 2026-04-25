@@ -37,7 +37,7 @@ export function LineSchedule({selectedOrder}: LineScheduleProps) {
             <Column dataField="priLine" caption="PRI Line" />
             <Column dataField="line" caption="Line" />
             <Column dataField="lineType" caption="Line Type" />
-
+          
             <Column
               caption="Summary"
               cellRender={(cell) => {
