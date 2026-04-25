@@ -1,24 +1,18 @@
 import React from 'react';
-import DataGrid, {
-  Column,
-  Scrolling,
-  HeaderFilter,
-  Selection,
-} from 'devextreme-react/data-grid';
-
+import DataGrid, {Column, Scrolling, HeaderFilter, Selection} from 'devextreme-react/data-grid';
 import { orders } from '../data/order.data';
 
 interface Props {
   onSelectOrder?: (order: any) => void;
 }
-
+//Logic nghiệp vụ
 export function OrdersTable({ onSelectOrder }: Props) {
   
   const calculateEarliestStart = (data: any) => {
     if (!data?.eta) return null;
 
     const etaDate = new Date(data.eta);
-    let daysToAdd = 6; // Mặc định 6 ngày (T2 -> T7)
+    let daysToAdd = 6; // Mặc định 6 ngày làm (T2 -> T7)
 
     const notes = data.specialNotes || '';
     if (notes.includes('Print/EMB difficult') || notes.includes('Quilting difficult')) { 
@@ -43,7 +37,7 @@ export function OrdersTable({ onSelectOrder }: Props) {
         wordWrapEnabled
         onRowClick={(e) => onSelectOrder?.(e.data)}
       >
-        
+
         <Scrolling mode="standard" showScrollbar="always" />
         <HeaderFilter visible = {false}/>
         <Selection mode="single" />
@@ -81,7 +75,7 @@ export function OrdersTable({ onSelectOrder }: Props) {
         <Column caption="Tình trạng Nguyên Phụ Liệu">
           <Column 
             dataField="materialStatus" 
-            caption="Status Material" 
+            caption="Status Material"
             width={160} 
             cellRender={(d) => (
               <span style={{ 
@@ -93,7 +87,6 @@ export function OrdersTable({ onSelectOrder }: Props) {
                 {d.value}
               </span>
             )}
-
 
           />
           <Column 
