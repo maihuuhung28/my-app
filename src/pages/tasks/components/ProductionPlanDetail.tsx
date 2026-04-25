@@ -11,6 +11,7 @@ import DataGrid, {
   Pager,
 } from 'devextreme-react/data-grid';
 
+
 export function ProductionPlanDetail() {
   return (
     <div className="grid-container">
@@ -34,12 +35,13 @@ export function ProductionPlanDetail() {
     <Pager
     visible={true}
     displayMode="full"
-    showPageSizeSelector={true}
-    //allowedPageSizes={[1,2,3,4]}
+    //Giãn Datagrid
+    //showPageSizeSelector={true}
+    //allowedPageSizes={[]}
     showInfo={true}
     showNavigationButtons={true}
     />
-
+       
     <FilterRow visible = {false}/>
     <HeaderFilter visible />
     <Selection mode="single" />
@@ -79,14 +81,14 @@ export function ProductionPlanDetail() {
       width={110} 
       allowEditing={true} 
     />
-    
+
     <Column 
       dataField="orderQty" 
       caption="Order Qty" 
       dataType="number" 
       format="#,##0" 
       width={120} 
-      allowEditing={false} 
+      allowEditing={true} 
     />
     
     <Column 
@@ -101,18 +103,18 @@ export function ProductionPlanDetail() {
     <Column 
       dataField="target" 
       caption="Target" 
-      dataType="number" 
+      dataType="number"   
       format="#,##0" 
       width={110} 
       allowEditing={true} 
     />
     
-    <Column 
+    <Column
       dataField="inlineDays" 
       caption="inline days" 
       dataType="number" 
       width={100} 
-      allowEditing={false} 
+      allowEditing={true} 
     />
     
     <Column 
@@ -124,7 +126,7 @@ export function ProductionPlanDetail() {
     
     <Column 
       dataField="inlineDate" 
-      caption="Inline date" 
+      caption="Inline Date" 
       dataType="date" 
       format="dd/MM/yyyy" 
       width={130} 
@@ -146,7 +148,7 @@ export function ProductionPlanDetail() {
       dataType="date" 
       format="dd/MM/yyyy" 
       width={170} 
-      allowEditing={true} 
+      allowEditing={false} 
     />
     
     <Column 
