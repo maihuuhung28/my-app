@@ -4,7 +4,6 @@ import {
   getTasksByLine,
   calcProgress,
   type GanttTask,
-  type PlanStatus,
   type SewingLine,
 } from "../data/LineSchedule.data";
 
@@ -24,20 +23,15 @@ const DAY_MS = 86_400_000;
 const TIMELINE_START = new Date("2026-05-01T00:00:00");
 const TIMELINE_DAYS = 76;
 const DAY_WIDTH = 30;
-const LEFT_GRID_WIDTH = 520;
+const LEFT_GRID_WIDTH = 250;
 const ROW_HEIGHT = 42;
 
-const STATUS_COLOR: Record<PlanStatus, string> = {
-  "Already plan": "#22c55e",
-  "Not yet plan": "#94a3b8",
-  "Plan Partial": "#f97316",
-};
+type ScheduleStatus = "Kịp" | "Không kịp";
 
-const CATEGORY_COLOR = {
-  TP: { bg: "#dbeafe", border: "#2563eb", text: "#1e3a8a" },
-  DUP: { bg: "#fef3c7", border: "#d97706", text: "#78350f" },
-  BTP: { bg: "#ede9fe", border: "#7c3aed", text: "#4c1d95" },
-} as const;
+const STATUS_COLOR: Record<ScheduleStatus, string> = {
+  "Kịp": "#22c55e",
+  "Không kịp": "#ef4444",
+};
 
 const formatShortDate = (iso: string | Date) => {
   const d = typeof iso === "string" ? new Date(iso) : iso;
@@ -55,6 +49,15 @@ const dayOffset = (iso: string) =>
 const addDays = (date: Date, days: number) =>
   new Date(date.getTime() + days * DAY_MS);
 
+const getQvtDate = (task: GanttTask) =>
+  addDays(new Date(`${task.crd}T00:00:00`), -5);
+
+const getScheduleStatus = (task: GanttTask): ScheduleStatus => {
+  const finalOfflineDate = new Date(`${task.finalOfflineDate}T00:00:00`);
+  const qvtDate = getQvtDate(task);
+  return finalOfflineDate < qvtDate ? "Kịp" : "Không kịp";
+};
+
 const latestOfflineDate = (tasks: GanttTask[]) => {
   if (!tasks.length) return null;
 
@@ -63,11 +66,10 @@ const latestOfflineDate = (tasks: GanttTask[]) => {
     .sort((a, b) => b - a)[0];
 };
 
-const planStatusOptions: Array<PlanStatus | "All"> = [
+const scheduleStatusOptions: Array<ScheduleStatus | "All"> = [
   "All",
-  "Already plan",
-  "Not yet plan",
-  "Plan Partial",
+  "Kịp",
+  "Không kịp",
 ];
 
 function FilterSelect({
@@ -99,30 +101,18 @@ function Legend() {
   return (
     <div className="line-schedule__legend">
       <span>
-        <i style={{ background: CATEGORY_COLOR.TP.border }} />
-        TP
+        <i style={{ background: STATUS_COLOR["Kịp"] }} />
+        On time
       </span>
       <span>
-        <i style={{ background: CATEGORY_COLOR.DUP.border }} />
-        DUP
-      </span>
-      <span>
-        <i style={{ background: CATEGORY_COLOR.BTP.border }} />
-        BTP
-      </span>
-      <span>
-        <i style={{ background: "#f59e0b" }} />
-        Suggested
-      </span>
-      <span>
-        <i style={{ background: "#ef4444" }} />
-        Over QVT
+        <i style={{ background: STATUS_COLOR["Không kịp"] }} />
+        Delayed
       </span>
     </div>
   );
 }
 
-function StatusBadge({ status }: { status: PlanStatus }) {
+function StatusBadge({ status }: { status: ScheduleStatus }) {
   return (
     <span
       className="line-schedule__status"
@@ -140,12 +130,10 @@ function StatusBadge({ status }: { status: PlanStatus }) {
 function GanttBar({
   task,
   selected,
-  recommended,
   onSelect,
 }: {
   task: GanttTask;
   selected: boolean;
-  recommended: boolean;
   onSelect: (task: GanttTask) => void;
 }) {
   const left = Math.max(0, dayOffset(task.inlineDate)) * DAY_WIDTH;
@@ -154,11 +142,12 @@ function GanttBar({
     (Math.max(0, dayOffset(task.finalOfflineDate)) - Math.max(0, dayOffset(task.inlineDate)) + 1) *
       DAY_WIDTH
   );
-  const category = CATEGORY_COLOR[task.category];
-  const isOverdue = task.isOverdue || new Date(task.finalOfflineDate) > new Date(task.crd);
-  const barBorder = isOverdue ? "#ef4444" : recommended || task.isHighlighted ? "#f59e0b" : category.border;
-  const barBg = isOverdue ? "#fee2e2" : recommended || task.isHighlighted ? "#fef3c7" : category.bg;
-  const textColor = isOverdue ? "#991b1b" : recommended || task.isHighlighted ? "#92400e" : category.text;
+  const scheduleStatus = getScheduleStatus(task);
+  const isOnTime = scheduleStatus === "Kịp";
+  const barBorder = STATUS_COLOR[scheduleStatus];
+  const barBg = isOnTime ? "#dcfce7" : "#fee2e2";
+  const textColor = isOnTime ? "#166534" : "#991b1b";
+  const qvtDate = getQvtDate(task);
 
   return (
     <button
@@ -166,7 +155,7 @@ function GanttBar({
       className={`line-schedule__bar${selected ? " line-schedule__bar--selected" : ""}`}
       title={`${task.style} / ${task.buy} / ${task.category} | ${task.dutyQty.toLocaleString()} pcs | ${formatFullDate(
         task.inlineDate
-      )} - ${formatFullDate(task.finalOfflineDate)}`}
+      )} - ${formatFullDate(task.finalOfflineDate)} | ${scheduleStatus} | QVT: ${formatFullDate(qvtDate)}`}
       onClick={() => onSelect(task)}
       style={{
         left,
@@ -198,6 +187,9 @@ function DetailPanel({
   line: SewingLine;
   onClose: () => void;
 }) {
+  const scheduleStatus = getScheduleStatus(task);
+  const qvtDate = getQvtDate(task);
+
   return (
     <aside className="line-schedule__detail">
       <div className="line-schedule__detail-head">
@@ -215,7 +207,7 @@ function DetailPanel({
         <b>{task.category}</b>
         <span>Status</span>
         <b>
-          <StatusBadge status={task.planStatus} />
+          <StatusBadge status={scheduleStatus} />
         </b>
         <span>Duty Qty</span>
         <b>{task.dutyQty.toLocaleString()}</b>
@@ -227,7 +219,9 @@ function DetailPanel({
         <b>{formatFullDate(task.inlineDate)}</b>
         <span>Final Offline</span>
         <b>{formatFullDate(task.finalOfflineDate)}</b>
-        <span>CRD/QVT</span>
+        <span>QVT Date</span>
+        <b>{formatFullDate(qvtDate)}</b>
+        <span>CRD</span>
         <b>{formatFullDate(task.crd)}</b>
       </div>
     </aside>
@@ -256,15 +250,10 @@ export function LineSchedule({ selectedOrder = null }: LineScheduleProps) {
     [filterLine]
   );
 
-  const taskMatchesSelectedOrder = (task: GanttTask) => {
-    if (!selectedOrder?.style) return false;
-    return task.style === selectedOrder.style || task.buy === selectedOrder.buy;
-  };
-
   const getVisibleTasks = (lineId: string) =>
     getTasksByLine(lineId).filter((task) => {
       if (filterSeason !== "All" && task.season !== filterSeason) return false;
-      if (filterStatus !== "All" && task.planStatus !== filterStatus) return false;
+      if (filterStatus !== "All" && getScheduleStatus(task) !== filterStatus) return false;
       return true;
     });
 
@@ -283,7 +272,7 @@ export function LineSchedule({ selectedOrder = null }: LineScheduleProps) {
         <FilterSelect
           label="Status"
           value={filterStatus}
-          options={planStatusOptions}
+          options={scheduleStatusOptions}
           onChange={setFilterStatus}
         />
         <FilterSelect label="Line" value={filterLine} options={lineIds} onChange={setFilterLine} />
@@ -305,9 +294,6 @@ export function LineSchedule({ selectedOrder = null }: LineScheduleProps) {
             <span>PRI Line</span>
             <span>Line</span>
             <span>Line Type</span>
-            <span>Product Type</span>
-            <span>Avg Eff</span>
-            <span>Free From</span>
           </div>
           {filteredLines.map((line) => {
             const tasks = getVisibleTasks(line.id);
@@ -323,9 +309,6 @@ export function LineSchedule({ selectedOrder = null }: LineScheduleProps) {
                 <span>{line.priLine}</span>
                 <b>{line.id}</b>
                 <span>{line.lineType}</span>
-                <span title={line.productType}>{line.productType}</span>
-                <span>{Math.round(line.avgEff * 100)}%</span>
-                <span>{freeFrom ? formatShortDate(new Date(freeFrom)) : "-"}</span>
               </button>
             );
           })}
@@ -353,7 +336,6 @@ export function LineSchedule({ selectedOrder = null }: LineScheduleProps) {
                     <GanttBar
                       key={task.id}
                       task={task}
-                      recommended={taskMatchesSelectedOrder(task)}
                       selected={selectedTask?.id === task.id}
                       onSelect={setSelectedTask}
                     />
