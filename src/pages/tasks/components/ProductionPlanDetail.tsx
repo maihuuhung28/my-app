@@ -1,114 +1,416 @@
-import { useState } from 'react';
+// import {useState} from 'react';
+// import DataGrid, {
+//   Column,
+//   Editing,
+//   HeaderFilter, 
+//   Scrolling,
+// } from "devextreme-react/data-grid";
+// import { Button } from "devextreme-react";
+// import type { ProductionPlan } from "../types/productionPlan.types";
+// import type { Order } from "../data/order.data";
+// import {
+//   calculateEstOfflineDate,
+//   calculateInlineDays,
+//   isEstOfflineOverdue,
+// } from "../utils/productionPlan.utils";
+
+// interface ProductionPlanDetailProps {
+//   plans: ProductionPlan[];
+//   selectedOrder?: Order | null;
+//   onUpdate?: (updatedPlan: ProductionPlan) => void;
+//   onDelete?: (planId: string) => void;
+//   onConfirm?: () => void;
+//   onCancel?: () => void;
+// }
+
+// export function ProductionPlanDetail({
+//   plans = [],
+//   selectedOrder,
+//   onUpdate,
+//   onDelete,
+//   onConfirm,
+//   onCancel,
+// }: ProductionPlanDetailProps) {
+//   if (plans.length === 0) return null;
+
+//   const allPlansConfirmed = plans.every((plan) => plan.status === "Confirmed");
+
+//   // Hàm để render cell với cảnh báo màu đỏ nếu Est. Offline > QVT
+//   const estOfflineCellRender = (data: any) => {
+//     const plan = data.data as ProductionPlan;
+//     const isOverdue = selectedOrder && isEstOfflineOverdue(plan, selectedOrder);
+    
+//     return (
+//       <div className={isOverdue ? "cell-danger-warning" : ""}>
+//         {data.text}
+//       </div>
+//     );
+//   };
+
+//   return (
+//     <div className="production-plan-detail">
+//       <div className="d-flex justify-content-between align-items-center mb-3">
+//         <div>
+//           <h5 className="mb-1">PRODUCTION PLAN DETAIL</h5>
+//           <span className={`badge ${allPlansConfirmed ? "bg-success" : "bg-secondary"}`}>
+//             {allPlansConfirmed ? "Confirmed" : "Draft"}
+//           </span>
+//         </div>
+
+//         <div>
+//           <Button
+//             text="Back"
+//             type="normal"
+//             stylingMode="outlined"
+//             className="me-2"
+//             onClick={onCancel}
+//           />
+//           <Button
+//             text={allPlansConfirmed ? "Confirmed" : "Confirm Plan"}
+//             type="success"
+//             stylingMode="contained"
+//             disabled={allPlansConfirmed}
+//             onClick={onConfirm}
+//           />
+//         </div>
+//       </div>
+
+//       <DataGrid
+//         dataSource={plans}
+//         keyExpr="id"
+//         height={480}
+//         showBorders={true}
+//         showRowLines={true}
+//         showColumnLines={true}
+//         rowAlternationEnabled={true}
+//         columnAutoWidth
+//         wordWrapEnabled
+//         onRowUpdated={(event) => onUpdate?.(event.data as ProductionPlan)}
+//         onRowRemoved={(event) => {
+//           const removedPlan = event.data as ProductionPlan | undefined;
+//           if (removedPlan) onDelete?.(removedPlan.id);
+//         }}
+//       >
+
+//         <Scrolling mode="standard" showScrollbar="always" />
+//         <HeaderFilter visible />
+//         <Editing mode="cell" allowUpdating={true} allowDeleting={true} />
+        
+//         <Column dataField="season" caption="Season" width={100} allowEditing={false} />
+//         <Column dataField="style" caption="Style" width={160} allowEditing={false} />
+//         <Column dataField="buy" caption="BUY" width={120} allowEditing={false} />
+//         <Column 
+//           dataField="orderQty" 
+//           caption="Order Qty" 
+//           dataType="number" 
+//           format="#,##0" 
+//           width={130} 
+//           allowEditing={false} 
+//         />
+//         <Column 
+//           dataField="target" 
+//           caption="Target" 
+//           dataType="number" 
+//           format="#,##0" 
+//           width={110} 
+//         />
+//         <Column dataField="category" caption="Category Line" width={140} allowEditing={true} />
+//         <Column 
+//           dataField="dutyQty" 
+//           caption="Duty Qty" 
+//           dataType="number" 
+//           format="#,##0" 
+//           width={130} 
+//         />
+//         <Column 
+//           dataField="productionDays" 
+//           caption="Production Days" 
+//           dataType="number" 
+//           width={180} 
+//           allowEditing={false} 
+//           calculateCellValue={calculateInlineDays} 
+//         />
+//         <Column dataField="conversionTime" caption="Conversion Time" width={155} />
+//         <Column 
+//           dataField="inlineDate" 
+//           caption="Inline Date" 
+//           dataType="date" 
+//           format="dd/MM/yyyy" 
+//           width={130} 
+//         />
+//         <Column 
+//           dataField="estOfflineDate" 
+//           caption="Est. Offline Date" 
+//           dataType="date" 
+//           format="dd/MM/yyyy" 
+//           width={130} 
+//           allowEditing={false} 
+//           calculateCellValue={calculateEstOfflineDate}
+//           cellRender={estOfflineCellRender}
+//         />
+//         <Column
+//           dataField="actualOfflineDate" 
+//           caption="Actual Offline Date" 
+//           dataType="date" 
+//           format="dd/MM/yyyy" 
+//           width={140} 
+//         />
+//         <Column dataField="crd" caption="QVT Date" dataType="date" format="dd/MM/yyyy" width={120} allowEditing={true} />
+//       </DataGrid>
+//     </div>
+//   );
+// } 
+import { useState } from "react";
 import DataGrid, {
   Column,
-  Scrolling,
-  HeaderFilter,
   Editing,
-} from 'devextreme-react/data-grid';
-import { productionPlanDetailData } from '../data/productionPlanDetail.data';
+  HeaderFilter,
+  Scrolling,
+} from "devextreme-react/data-grid";
+import { Button } from "devextreme-react";
+
+import type { ProductionPlan } from "../types/productionPlan.types";
+import type { Order } from "../data/order.data";
+
+import {
+  calculateEstOfflineDate,
+  calculateInlineDays,
+  isEstOfflineOverdue,
+} from "../utils/productionPlan.utils";
+
+import { AuditLog } from "./audit-log/AuditLog";
+import type { AuditLogItem } from "./audit-log/AuditLog";
 
 interface ProductionPlanDetailProps {
-  selectedLineIds: string[];   
+  plans: ProductionPlan[];
+  selectedOrder?: Order | null;
+  onUpdate?: (updatedPlan: ProductionPlan) => void;
+  onDelete?: (planId: string) => void;
+  onConfirm?: () => void;
+  onCancel?: () => void;
 }
 
-// Hàm tính Inline days (cột Duty Qty chia cột Target)
-//làm tròn giá trị lên
-const calculateInlineDays = (row: any) => {
-  if (!row?.dutyQty || !row?.target || row.target === 0) return 0; 
-  return Math.ceil(row.dutyQty / row.target); //DutyQty chia cho Target làm tròn lên để đảm bảo đủ ngày sản xuất
-};
+/** 🔹 Chỉ audit field nghiệp vụ */
+const AUDIT_FIELDS: (keyof ProductionPlan)[] = [
+  "target",
+  "category",
+  "dutyQty",
+  "conversionTime",
+  "inlineDate",
+  "actualOfflineDate",
+  "crd",
+];
 
-// Hàm tính Est. Offline Date
-const calculateEstOfflineDate = (row: any) => {
-  if (!row?.inlineDate) return null;
+export function ProductionPlanDetail({
+  plans = [],
+  selectedOrder,
+  onUpdate,
+  onDelete,
+  onConfirm,
+  onCancel,
+}: ProductionPlanDetailProps) {
+  if (plans.length === 0) return null;
 
-  let daysToAdd = calculateInlineDays(row);
-  if (row.conversionTime === "Conv") {
-    daysToAdd += 3;
-  }
-
-  const date = new Date(row.inlineDate);
-  date.setDate(date.getDate() + daysToAdd);
-  
-  //trừ Chủ Nhật
-  let addedDays = 0;
-  while (addedDays < daysToAdd) {
-    date.setDate(date.getDate() + 1);
-    if (date.getDay() !== 0) { // Nếu không phải Chủ Nhật
-      addedDays++;
-    }
-  }
-  return date;
-};
-
-export function ProductionPlanDetail({ selectedLineIds = [] }: ProductionPlanDetailProps) {
-  const dataSource = productionPlanDetailData.filter(row => 
-    selectedLineIds.includes(row.line)
+  const allPlansConfirmed = plans.every(
+    (plan) => plan.status === "Confirmed"
   );
 
-  if (dataSource.length === 0) return null;
+  /** 🔹 AUDIT LOG STATE */
+  const [auditLogs, setAuditLogs] = useState<AuditLogItem[]>([]);
+  const [openAudit, setOpenAudit] = useState(false);
+
+  /** 🔹 MOCK USER (sau này gắn auth) */
+  const currentUser = {
+    name: "Planner A",
+    role: "Planner",
+  };
+
+  /** 🔹 CONFIRM PLAN */
+  const handleConfirm = () => {
+    setAuditLogs((prev) => [
+      {
+        id: Date.now(),
+        time: new Date().toLocaleString(),
+        user: currentUser.name,
+        role: currentUser.role,
+        action: "CONFIRM",
+        line: "-",
+        field: "Production Plan",
+        oldValue: "Draft",
+        newValue: "Confirmed",
+      },
+      ...prev,
+    ]);
+
+    onConfirm?.();
+  };
+
+  /** 🔹 Warning cell */
+  const estOfflineCellRender = (data: any) => {
+    const plan = data.data as ProductionPlan;
+    const isOverdue =
+      selectedOrder && isEstOfflineOverdue(plan, selectedOrder);
+
+    return (
+      <div className={isOverdue ? "cell-danger-warning" : ""}>
+        {data.text}
+      </div>
+    );
+  };
 
   return (
     <div className="production-plan-detail">
-      <h5 className="mb-3">PRODUCTION PLAN DETAIL</h5>
-      
+      {/* HEADER */}
+      <div className="d-flex justify-content-between align-items-center mb-3">
+        <div>
+          <h5 className="mb-1">PRODUCTION PLAN DETAIL</h5>
+          <span
+            className={`badge ${
+              allPlansConfirmed ? "bg-success" : "bg-secondary"
+            }`}
+          >
+            {allPlansConfirmed ? "Confirmed" : "Draft"}
+          </span>
+        </div>
+
+        <div>
+          <Button
+            text="Back"
+            type="normal"
+            stylingMode="outlined"
+            className="me-2"
+            onClick={onCancel}
+          />
+
+          <Button
+            text="View History"
+            icon="clock"
+            type="normal"
+            stylingMode="outlined"
+            className="me-2"
+            onClick={() => setOpenAudit(true)}
+          />
+
+          <Button
+            text={allPlansConfirmed ? "Confirmed" : "Confirm Plan"}
+            type="success"
+            stylingMode="contained"
+            disabled={allPlansConfirmed}
+            onClick={handleConfirm}
+          />
+        </div>
+      </div>
+
+      {/* DATA GRID */}
       <DataGrid
-        dataSource={dataSource}
-        height={450}
-        showBorders={true}
-        showRowLines={true}
-        showColumnLines={true}
-        rowAlternationEnabled={true}
+        dataSource={plans}
+        keyExpr="id"
+        height={480}
+        showBorders
+        showRowLines
+        showColumnLines
+        rowAlternationEnabled
         columnAutoWidth
         wordWrapEnabled
+
+        /** ✅ ĐÚNG EVENT CHO AUDIT */
+        onRowUpdating={(e) => {
+          const { oldData, newData, key } = e;
+
+          const changedFields = AUDIT_FIELDS.filter(
+            (field) => oldData[field] !== newData[field]
+          );
+
+          if (changedFields.length > 0) {
+            changedFields.forEach((field) => {
+              const log: AuditLogItem = {
+                id: Date.now() + Math.random(),
+                time: new Date().toLocaleString(),
+                user: currentUser.name,
+                role: currentUser.role,
+                action: "UPDATE",
+                line: oldData.line,
+                field: String(field),
+                oldValue: String(oldData[field] ?? "-"),
+                newValue: String(newData[field] ?? "-"),
+              };
+
+              setAuditLogs((prev) => [log, ...prev]);
+            });
+          }
+        }}
+
+        /** Sau khi update xong */
+        onRowUpdated={(e) => {
+          onUpdate?.(e.data as ProductionPlan);
+        }}
+
+        onRowRemoved={(e) => {
+          const removedPlan = e.data as ProductionPlan;
+          if (!removedPlan) return;
+
+          setAuditLogs((prev) => [
+            {
+              id: Date.now(),
+              time: new Date().toLocaleString(),
+              user: currentUser.name,
+              role: currentUser.role,
+              action: "DELETE",
+              line: removedPlan.line,
+              field: "Production Plan",
+              oldValue: removedPlan.style,
+              newValue: "-",
+            },
+            ...prev,
+          ]);
+
+          onDelete?.(removedPlan.id);
+        }}
       >
         <Scrolling mode="standard" showScrollbar="always" />
         <HeaderFilter visible />
-        <Editing mode="cell" allowUpdating={true} />
+        <Editing mode="cell" allowUpdating allowDeleting />
 
-        <Column dataField="line" caption="LINE" width={90} allowEditing={false} />
         <Column dataField="season" caption="Season" width={100} allowEditing={false} />
-        <Column dataField="style" caption="Style" width={150} allowEditing={false} />
+        <Column dataField="style" caption="Style" width={160} allowEditing={false} />
         <Column dataField="buy" caption="BUY" width={120} allowEditing={false} />
-        <Column dataField="category" caption="Category" width={110} allowEditing={true} />
-        <Column dataField="orderQty" caption="Order Qty" dataType="number" format="#,##0" width={120} allowEditing={false} />
-        <Column dataField="dutyQty" caption="Duty Qty" dataType="number" format="#,##0" width={120} allowEditing={true} />
-        <Column dataField="target" caption="Target" dataType="number" format="#,##0" width={110} allowEditing={true} />
-        
-        <Column 
-          dataField="InlineDays" 
-          caption="Inline days" 
-          dataType="number" 
-          width={140} 
+        <Column dataField="orderQty" caption="Order Qty" dataType="number" format="#,##0" width={130} allowEditing={false} />
+        <Column dataField="target" caption="Target" dataType="number" width={110} />
+        <Column dataField="category" caption="Category Line" width={140} />
+        <Column dataField="dutyQty" caption="Duty Qty" dataType="number" width={130} />
+
+        <Column
+          dataField="productionDays"
+          caption="Production Days"
+          width={180}
           allowEditing={false}
           calculateCellValue={calculateInlineDays}
         />
 
-        <Column dataField="conversionTime" caption="Conv." width={100} allowEditing={true} />
+        <Column dataField="conversionTime" caption="Conversion Time" width={155} />
+        <Column dataField="inlineDate" caption="Inline Date" dataType="date" format="dd/MM/yyyy" width={130} />
 
-        <Column 
-          dataField="inlineDate" 
-          caption="Inline Date" 
-          dataType="date" 
-          format="dd/MM/yyyy" 
-          width={130} 
-          allowEditing={true} 
-        />
-
-        <Column 
-          dataField="estOfflineDate" 
-          caption="Est. Offline" 
-          dataType="date" 
-          format="dd/MM/yyyy" 
-          width={140} 
+        <Column
+          dataField="estOfflineDate"
+          caption="Est. Offline Date"
+          dataType="date"
+          format="dd/MM/yyyy"
+          width={130}
           allowEditing={false}
           calculateCellValue={calculateEstOfflineDate}
+          cellRender={estOfflineCellRender}
         />
 
-        <Column dataField="actualOfflineDate" caption="Actual Offline" dataType="date" format="dd/MM/yyyy" width={140} allowEditing={true} />
-        <Column dataField="finalOfflineDate" caption="Final Offline" dataType="date" format="dd/MM/yyyy" width={140} allowEditing={false} />
-        <Column dataField="crd" caption="CRD" dataType="date" format="dd/MM/yyyy" width={120} allowEditing={false} />
+        <Column dataField="actualOfflineDate" caption="Actual Offline Date" dataType="date" format="dd/MM/yyyy" width={140} />
+        <Column dataField="crd" caption="QVT Date" dataType="date" format="dd/MM/yyyy" width={120} />
       </DataGrid>
+
+      {/* AUDIT LOG POPUP */}
+      <AuditLog
+        show={openAudit}
+        onClose={() => setOpenAudit(false)}
+        logs={auditLogs}
+      />
     </div>
   );
 }
