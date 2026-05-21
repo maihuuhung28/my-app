@@ -1,74 +1,18 @@
-// .orders-filter-bar {
-//   background: #ffffff;
-//   border-radius: 4px;
-//   padding: 20px;
-//   // margin-bottom: 20px;
-//   // box-shadow: 0 2px 4px rgba(255, 255, 255, 0.08);
-
-//   .filter-group {
-//     display: grid;
-//     grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
-//     gap: 15px;
-//     align-items: flex-end;
-
-//     @media (max-width: 992px) {
-//       grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
-//       gap: 12px;
-//     }
-
-//     @media (max-width: 768px) {
-//       grid-template-columns: 1fr;
-//     }
-//   }
-
-//   .filter-item {
-//     width: 100%;
-
-//     .form-floating {
-//       position: relative;
-//       width: 100%;
-//     }
-
-//     .form-floating > label {
-//       font-weight: 500;
-//       font-size: 15px;
-//       pointer-events: none;
-//     }
-
-//     .form-floating > .form-select {
-//       height: 40px;
-//       padding-top: 1.1rem;
-//       padding-bottom: 0.3rem;
-//       font-size: 14px;
-//       border-radius: 4px;
-
-//       &:hover {
-//         border-color: #b5b5b5;
-//       }
-
-//       &:focus {
-//         border-color: #0066cc;
-//         box-shadow: 0 0 0 2px rgba(0, 102, 204, 0.1);
-//       }
-//     }
-//   }
-// }
 $color-bg-container: #ffffff;
-$color-border-default: #dee2e6; // Màu border Bootstrap
+$color-border-default: #dee2e6; 
 $color-border-hover: #b5b5b5;
 $color-border-focus: #0066cc;
-$color-text-label: #6c757d;
+$color-text-label: #747d8c;
+$color-text-main: #2f3542;
 
-$spacing-base: 15px;
-$spacing-sm: 10px;
+$spacing-base: 12px;
 $border-radius-base: 4px;
-$control-height: 40px;
+$control-height: 38px;
 
 .orders-filter-bar {
   background-color: $color-bg-container;
   border-radius: $border-radius-base;
-  padding: 20px;
-  width: 100%;
+  padding: 12px 16px;
 
   .filter-group {
     display: flex;
@@ -77,30 +21,41 @@ $control-height: 40px;
     gap: $spacing-base;
     width: 100%;
 
-    // Từng ô filter thành phần (Season, Buy, Status)
     .filter-item {
       flex: 1;           
-      min-width: 200px;      
+      min-width: 160px;
       
       .form-floating {
         width: 100%;
+        position: relative;
 
         label {
-          font-weight: 500;
-          font-size: 14px;
+          font-weight: 600; 
+          font-size: 11px;  
           color: $color-text-label;
           pointer-events: none; 
+          white-space: nowrap;
+          overflow: hidden;
+          text-overflow: ellipsis;
+          width: calc(100% - 35px);
+          
+          padding: 0 !important;
+          transform: scale(1) translateY(4px) translateX(12px) !important; 
+          transform-origin: top left;
         }
 
         .form-select {
           height: $control-height;
-          padding-top: 1.1rem;
-          padding-bottom: 0.3rem;
-          font-size: 14px;
+          padding-top: 14px; 
+          padding-bottom: 0px;
+          padding-left: 12px;
+          font-size: 13px;
+          color: $color-text-main;
           border-radius: $border-radius-base;
           border-color: $color-border-default;
           cursor: pointer;
-          transition: border-color 0.15s ease-in-out, box-shadow 0.15s ease-in-out;
+          background-position: right 0.5rem center;
+          background-size: 14px;
 
           &:hover {
             border-color: $color-border-hover;
@@ -114,60 +69,23 @@ $control-height: 40px;
       }
     }
 
-    // Cụm nút Search & Reset
     .filter-actions {
       flex: 0 0 auto;    
       display: flex;
-      gap: 8px;  
+      gap: 6px;
       height: $control-height; 
-      margin-left: $spacing-sm; 
+      margin-left: auto; 
 
       .btn {
         height: 100%;
-        padding: 0 20px;
-        font-size: 14px;
+        padding: 0 16px;
+        font-size: 13px;
         font-weight: 500;
         display: inline-flex;
         align-items: center;
         justify-content: center;
         border-radius: $border-radius-base;
-        white-space: nowrap; // Không cho chữ trong nút bị rớt dòng
-      }
-    }
-  }
-
-  // Trên màn hình Medium (Dưới 992px)
-  @media (max-width: 992px) {
-    .filter-group {
-      gap: 12px;
-      
-      .filter-item {
-        min-width: 170px; // Thu nhỏ min-width lại tí để nhét vừa hàng ngang
-      }
-    }
-  }
-
-  // Trên màn hình Mobile (Dưới 768px)
-  @media (max-width: 768px) {
-    padding: 15px;
-
-    .filter-group {
-      flex-direction: column; 
-      align-items: stretch;  
-      gap: 15px;
-
-      .filter-item {
-        width: 100%;
-      }
-
-      .filter-actions {
-        margin-left: 0;     
-        margin-top: 5px;      
-        justify-content: flex-end; 
-        
-        .btn {
-          flex: 1;        
-        }
+        white-space: nowrap; 
       }
     }
   }
