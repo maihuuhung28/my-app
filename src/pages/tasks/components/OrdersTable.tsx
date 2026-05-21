@@ -7,6 +7,7 @@ import DataGrid, {
   Selection,
 } from "devextreme-react/data-grid";
 import "bootstrap/dist/css/bootstrap.min.css";
+import { Button, Modal } from "react-bootstrap";
 import { orders, type Order } from "../data/order.data";
 import { OrdersFilter, type FilterState } from "./OrdersFilter";
 
@@ -14,6 +15,13 @@ interface Props {
   selectedOrderId?: number;
   getPlanStatus?: (orderId: number) => string;
   onSelectOrder?: (order: Order) => void;
+}
+
+interface TechpackImage {
+  dataUrl: string;
+  fileName: string;
+  fileSize: number;
+  uploadedAt: string;
 }
 
 const getPlanStatusBadge = (value = "") => {
@@ -46,6 +54,8 @@ export function OrdersTable({
   onSelectOrder,
 }: Props) {
   const [filters, setFilters] = useState<FilterState>({});
+  const [techpacks, setTechpacks] = useState<Record<number, TechpackImage>>({});
+  const [previewOrder, setPreviewOrder] = useState<Order | null>(null);
 
   const filteredOrders = useMemo(
     () =>
@@ -71,6 +81,89 @@ export function OrdersTable({
       }),
     [filters, getPlanStatus]
   );
+
+  const previewTechpack = previewOrder ? techpacks[previewOrder.id] : null;
+
+  const handleTechpackUpload = (
+    order: Order,
+    file: File | undefined
+  ) => {
+    if (!file || !file.type.startsWith("image/")) return;
+
+    const reader = new FileReader();
+    reader.onload = () => {
+      if (typeof reader.result !== "string") return;
+      const dataUrl = reader.result;
+
+      setTechpacks((current) => ({
+        ...current,
+        [order.id]: {
+          dataUrl,
+          fileName: file.name,
+          fileSize: file.size,
+          uploadedAt: new Date().toISOString(),
+        },
+      }));
+    };
+    reader.readAsDataURL(file);
+  };
+
+  const handleRemoveTechpack = () => {
+    if (!previewOrder) return;
+
+    setTechpacks((current) => {
+      const next = { ...current };
+      delete next[previewOrder.id];
+      return next;
+    });
+    setPreviewOrder(null);
+  };
+
+  const renderTechpackCell = (cell: { data?: Order }) => {
+    const order = cell.data;
+    if (!order) return null;
+
+    const techpack = techpacks[order.id];
+    const inputId = `techpack-upload-${order.id}`;
+
+    return (
+      <div
+        className="techpack-cell"
+        onClick={(event) => event.stopPropagation()}
+      >
+        <input
+          id={inputId}
+          className="techpack-cell__input"
+          type="file"
+          accept="image/*"
+          onChange={(event) => {
+            handleTechpackUpload(order, event.target.files?.[0]);
+            event.target.value = "";
+          }}
+        />
+
+        {techpack ? (
+          <>
+            <button
+              type="button"
+              className="techpack-cell__preview"
+              title="View techpack"
+              onClick={() => setPreviewOrder(order)}
+            >
+              <img src={techpack.dataUrl} alt={`${order.style} techpack`} />
+            </button>
+            <label className="techpack-cell__replace" htmlFor={inputId}>
+              Replace
+            </label>
+          </>
+        ) : (
+          <label className="techpack-cell__upload" htmlFor={inputId}>
+            Upload
+          </label>
+        )}
+      </div>
+    );
+  };
 
   return (
     <div className="grid-container orders-table">
@@ -99,10 +192,17 @@ export function OrdersTable({
         <Column dataField="season" caption="Season" fixed width={90} allowEditing={false} />
         <Column dataField="style" caption="Style" fixed width={140} allowEditing={false} />
         <Column dataField="buy" caption="Buy" width={100} allowEditing={false} />
-        <Column dataField="qtyOrder" caption="Order Qty" dataType="number" format="#,##0" width={120} allowEditing={false} />
+        <Column dataField="qtyOrder" caption="Order Qty" dataType="number" format="#,##0" width={120} allowEditing={false}  alignment="left"/>
         <Column dataField="balqtyoutput" caption="Bal Qty Output" width={180} allowEditing={true}/>
         <Column dataField="firstCrd" caption="First CRD" dataType="date" format="dd/MM/yyyy" width={120} allowEditing={false} />
         <Column dataField="groupedBy" caption="Grouped by Garment Construction" width={260} allowEditing={false} />
+        <Column
+          dataField="techpack"
+          caption="Techpack"
+          width={145}
+          allowEditing={false}
+          cellRender={renderTechpackCell}
+        />
         <Column dataField="productType" caption="Product Type" width={180} allowEditing={false} />
         <Column dataField="category" caption="Category" width={120} allowEditing={false} />
 
@@ -124,7 +224,7 @@ export function OrdersTable({
         <Column dataField="eta" caption="ETA" dataType="date" format="dd/MM/yyyy" width={120} allowEditing={false} />
         <Column dataField="earliestStartDate" caption="Earliest Line Start Date" dataType="date" format="dd/MM/yyyy" width={170} allowEditing={false} />
         <Column dataField="sewingLineType" caption="Sewing Line Type" width={150} allowEditing={true} />
-        <Column dataField="target" caption="Target" dataType="number" format="#,##0" width={110} allowEditing={false} />
+        <Column dataField="target" caption="Target" dataType="number" format="#,##0" width={110} allowEditing={false} alignment="left" />
 
         <Column
           dataField="planStatus"
@@ -142,6 +242,43 @@ export function OrdersTable({
           }}
         />
       </DataGrid>
+
+      <Modal
+        show={Boolean(previewOrder && previewTechpack)}
+        onHide={() => setPreviewOrder(null)}
+        size="lg"
+        centered
+        className="techpack-preview-modal"
+      >
+        <Modal.Header closeButton>
+          <Modal.Title>
+            Techpack - {previewOrder?.style}
+          </Modal.Title>
+        </Modal.Header>
+        <Modal.Body>
+          {previewTechpack && (
+            <div className="techpack-preview">
+              <div className="techpack-preview__meta">
+                <span>{previewOrder?.season}</span>
+                <strong>{previewOrder?.buy}</strong>
+                <span>{previewTechpack.fileName}</span>
+              </div>
+              <img
+                src={previewTechpack.dataUrl}
+                alt={`${previewOrder?.style || "Order"} techpack preview`}
+              />
+            </div>
+          )}
+        </Modal.Body>
+        <Modal.Footer>
+          <Button variant="outline-danger" onClick={handleRemoveTechpack}>
+            Remove
+          </Button>
+          <Button variant="secondary" onClick={() => setPreviewOrder(null)}>
+            Close
+          </Button>
+        </Modal.Footer>
+      </Modal>
     </div>
   );
 }
