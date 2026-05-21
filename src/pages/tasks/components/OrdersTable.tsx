@@ -1,4 +1,4 @@
-import { useState, useMemo } from "react";
+import { useMemo, useState } from "react";
 import DataGrid, {
   Column,
   Editing,
@@ -6,9 +6,9 @@ import DataGrid, {
   Scrolling,
   Selection,
 } from "devextreme-react/data-grid";
+import "bootstrap/dist/css/bootstrap.min.css";
 import { orders, type Order } from "../data/order.data";
 import { OrdersFilter, type FilterState } from "./OrdersFilter";
-import "bootstrap/dist/css/bootstrap.min.css";
 
 interface Props {
   selectedOrderId?: number;
@@ -17,84 +17,65 @@ interface Props {
 }
 
 const getPlanStatusBadge = (value = "") => {
-  if (
-    value === "Done" ||
-    value === "OK" ||
-    value === "DATE - OK" ||
-    value === "Already plan"
-  ) {
+  if (value === "Already plan") {
     return { label: "Done", className: "bg-success" };
   }
 
-  if (value.includes("Partial") || value === "Have Partial") {
-    return { label: "Partial", className: "bg-warning text-dark" };
+  if (value === "Plan Partial") {
+    return { label: "Plan Partial", className: "bg-warning text-dark" };
   }
 
   return { label: "Pending", className: "bg-secondary" };
 };
 
 const getMaterialStatusBadge = (value = "") => {
-  if (value === "DATE - OK" || value === "OK" || value === "Done") {
-    return { label: "OK", className: "bg-success" };
+  if (value === "Arrived OK") {
+    return { label: "Arrived OK", className: "bg-success" };
   }
 
-  if (value.includes("Partial")) {
-    return { label: "Partial", className: "bg-warning text-dark" };
+  if (value === "Partial Arrive" || value === "Multiple batches") {
+    return { label: value, className: "bg-warning text-dark" };
   }
 
-  return { label: "Pending", className: "bg-secondary" };
+  return { label: value || "Not yet Arrived", className: "bg-secondary" };
 };
 
-export function OrdersTable({ selectedOrderId, getPlanStatus, onSelectOrder }: Props) {
+export function OrdersTable({
+  selectedOrderId,
+  getPlanStatus,
+  onSelectOrder,
+}: Props) {
   const [filters, setFilters] = useState<FilterState>({});
 
-  const calculateEarliestStart = (data: Order) => {
-    if (!data.eta) return null;
+  const filteredOrders = useMemo(
+    () =>
+      orders.filter((order) => {
+        if (filters.season && order.season !== filters.season) return false;
+        if (filters.styles && order.style !== filters.styles) return false;
+        if (filters.buy && order.buy !== filters.buy) return false;
 
-    const etaDate = new Date(data.eta);
-    const daysToAdd = 15;
-    etaDate.setDate(etaDate.getDate() + daysToAdd);
-    return etaDate;
-  };
+        const planStatus = getPlanStatus?.(order.id) ?? order.planStatus;
+        if (filters.status && planStatus !== filters.status) return false;
 
-  // Filter logic
-  const filteredOrders = useMemo(() => {
-    return orders.filter((order) => {
-      // Filter by Season
-      if (filters.season && order.season !== filters.season) {
-        return false;
-      }
-      //Filter Styles
-      if (filters.styles && order.style !== filters.styles) {
-        return false;
-      }
+        if (filters.search) {
+          const searchText = filters.search.toLowerCase();
+          const matches =
+            order.style.toLowerCase().includes(searchText) ||
+            order.buy.toLowerCase().includes(searchText) ||
+            order.productType.toLowerCase().includes(searchText);
 
-      // Filter by Buy
-      if (filters.buy && order.buy !== filters.buy) {
-        return false;
-      }
-      // Filter by Status
-      if (filters.status && order.planStatus !== filters.status) {
-        return false;
-      }
-      // Filter by Search
-      if (filters.search) {
-        const searchLower = filters.search.toLowerCase();
-        if (
-          !order.style.toLowerCase().includes(searchLower) &&
-          !order.color.toLowerCase().includes(searchLower)
-        ) {
-          return false;
+          if (!matches) return false;
         }
-      }
-      return true;
-    });
-  }, [filters]);
+
+        return true;
+      }),
+    [filters, getPlanStatus]
+  );
 
   return (
     <div className="grid-container orders-table">
       <OrdersFilter onFilter={setFilters} />
-      
+
       <DataGrid
         dataSource={filteredOrders}
         keyExpr="id"
@@ -110,71 +91,54 @@ export function OrdersTable({ selectedOrderId, getPlanStatus, onSelectOrder }: P
           if (order) onSelectOrder?.(order);
         }}
       >
-        <Editing mode="cell" allowUpdating={true} />
+        <Editing mode="cell" allowUpdating />
         <Scrolling mode="standard" showScrollbar="always" />
-        <HeaderFilter visible={true} />
+        <HeaderFilter visible />
         <Selection mode="single" />
 
-        <Column caption="THÔNG TIN ĐƠN HÀNG">
-          <Column dataField="season" caption="Season" fixed width={90} allowEditing={false} />
-          <Column dataField="style" caption="Style" fixed width={140} allowEditing={false} />
-          <Column dataField="buy" caption="Buy" width={90} allowEditing={false} />
-          <Column dataField="color" caption="Color" width={90} allowEditing={false} />
-          <Column dataField="firstCrd" caption="First CRD" dataType="date" format="dd/MM/yyyy" width={120} allowEditing={false} />
-          <Column dataField="qtyOrder" caption="Qty Order" dataType="number" format="#,##0" width={120} alignment="left" allowEditing={false} />
-          <Column dataField="balQty" caption="Bal Qty" width={110} alignment="left" allowEditing={false} />
-          <Column dataField="smv" caption="SMV" width={90} alignment="left" allowEditing={false} />
-          <Column dataField="category" caption="Category" width={120} alignment="left" allowEditing={false} />
-          <Column dataField="productType" caption="Product Type" width={160} alignment="left" allowEditing={false} />
-        </Column>
+        <Column dataField="season" caption="Season" fixed width={90} allowEditing={false} />
+        <Column dataField="style" caption="Style" fixed width={140} allowEditing={false} />
+        <Column dataField="buy" caption="Buy" width={100} allowEditing={false} />
+        <Column dataField="qtyOrder" caption="Order Qty" dataType="number" format="#,##0" width={120} allowEditing={false} />
+        <Column dataField="balqtyoutput" caption="Bal Qty Output" width={180} allowEditing={true}/>
+        <Column dataField="firstCrd" caption="First CRD" dataType="date" format="dd/MM/yyyy" width={120} allowEditing={false} />
+        <Column dataField="groupedBy" caption="Grouped by Garment Construction" width={260} allowEditing={false} />
+        <Column dataField="productType" caption="Product Type" width={180} allowEditing={false} />
+        <Column dataField="category" caption="Category" width={120} allowEditing={false} />
 
-        <Column caption="TÌNH TRẠNG NGUYÊN PHỤ LIỆU">
-          <Column
-            dataField="materialStatus"
-            caption="Status Material"
-            width={150}
-            allowEditing={false}
-            cellRender={(data: { value?: string }) => {
-              const status = getMaterialStatusBadge(data.value);
-              return (
-                <span className={`badge status-badge ${status.className}`}>
-                  {status.label}
-                </span>
-              );
-            }}
-          />
+        <Column
+          dataField="materialStatus"
+          caption="Status Material"
+          width={180}
+          allowEditing={false}
+          cellRender={(data: { value?: string }) => {
+            const status = getMaterialStatusBadge(data.value);
+            return (
+              <span className={`badge status-badge ${status.className}`}>
+                {status.label}
+              </span>
+            );
+          }}
+        />
 
-          <Column dataField="eta" caption="ETA" dataType="date" format="dd/MM/yyyy" width={120} />
-
-          <Column
-            caption="Earliest Line Start"
-            calculateCellValue={calculateEarliestStart}
-            dataType="date"
-            format="dd/MM/yyyy"
-            width={180}
-            cssClass="highlight-date-column"
-          />
-        </Column>
+        <Column dataField="eta" caption="ETA" dataType="date" format="dd/MM/yyyy" width={120} allowEditing={false} />
+        <Column dataField="earliestStartDate" caption="Earliest Line Start Date" dataType="date" format="dd/MM/yyyy" width={170} allowEditing={false} />
+        <Column dataField="sewingLineType" caption="Sewing Line Type" width={150} allowEditing={true} />
+        <Column dataField="target" caption="Target" dataType="number" format="#,##0" width={110} allowEditing={false} />
 
         <Column
           dataField="planStatus"
           caption="Plan Status"
-          fixed={true}
+          fixed
           fixedPosition="right"
-          width={120}
-          alignment="left"
+          width={130}
           allowEditing={false}
-          cellRender={(data: { value?: string }) => {
-            const order = data as { data?: Order; value?: string };
-            const statusValue = order.data
-              ? getPlanStatus?.(order.data.id) ?? data.value
+          cellRender={(data: { data?: Order; value?: string }) => {
+            const statusValue = data.data
+              ? getPlanStatus?.(data.data.id) ?? data.value
               : data.value;
             const status = getPlanStatusBadge(statusValue);
-            return (
-              <div className={`badge status-badge ${status.className}`}>
-                {status.label}
-              </div>
-            );
+            return <div className={`badge status-badge ${status.className}`}>{status.label}</div>;
           }}
         />
       </DataGrid>
