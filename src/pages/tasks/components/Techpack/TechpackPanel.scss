@@ -1,0 +1,51 @@
+.techpack-modal {
+  --tp-radius: 10px;
+  --tp-gap: 14px;
+}
+
+.techpack-modal .modal-content {
+  border-radius: var(--tp-radius);
+}
+
+.techpack-modal .modal-header {
+  border-bottom: 1px solid rgba(0, 0, 0, 0.06);
+}
+
+.techpack-modal .techpack-info-card {
+  border: 1px solid rgba(0, 0, 0, 0.06);
+  border-radius: var(--tp-radius);
+}
+
+.techpack-modal .techpack-viewer-card {
+  border: 1px solid rgba(0, 0, 0, 0.06);
+  border-radius: var(--tp-radius);
+}
+
+.techpack-modal .techpack-nav {
+  border-radius: var(--tp-radius);
+}
+
+.techpack-modal .techpack-nav .nav-link {
+  border-radius: 9px;
+  padding: 8px 10px;
+  margin: 0;
+  color: #334155;
+  font-weight: 600;
+}
+
+.techpack-modal .techpack-nav .nav-link.active {
+  background-color: #000000;
+  color: #fff;
+  border-color: transparent;
+}
+
+.techpack-modal .techpack-image-frame {
+  background: #f8fafc;
+  border-radius: 10px;
+  border: 1px solid rgba(0, 0, 0, 0.06);
+}
+
+.techpack-modal .techpack-empty {
+  padding: 18px;
+  color: #64748b;
+}
