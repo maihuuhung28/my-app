@@ -56,7 +56,7 @@ export function GarmentGroupTable({
         hoverStateEnabled
         onRowClick={(event) => {
           const row = event.data as EditableGarmentGroupRow | undefined;
-          if (row) onSelectGroup(row.id);
+          if (row) onSelectGroup(row.id); 
         }}
         onSelectionChanged={(event) => {
           const row = event.selectedRowsData[0] as EditableGarmentGroupRow | undefined;
