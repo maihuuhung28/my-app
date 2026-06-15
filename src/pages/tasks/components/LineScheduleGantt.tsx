@@ -1,32 +1,9 @@
-import {
-  memo,
-  useCallback,
-  useEffect,
-  useMemo,
-  useRef,
-  useState,
-} from "react";
-import {
-  calcProgress,
-  type GanttTask,
-  type SewingLine,
-} from "../data/LineSchedule.data";
-import {
-  addDays,
-  DAY_WIDTH,
-  dayOffset,
-  formatFullDate,
-  formatShortDate,
-  getQvtDate,
-  getScheduleStatus,
-  ROW_HEIGHT,
-  STATUS_COLOR,
-  TIMELINE_DAYS,
-  TIMELINE_START,
-} from "../utils/LineSchedule.utils";
+import { memo, useCallback, useEffect, useMemo, useRef, useState } from "react";
+import { calcProgress, type GanttTask, type SewingLine } from "../data/LineSchedule.data";
+import { addDays, DAY_WIDTH, dayOffset, formatFullDate,  formatShortDate, getQvtDate, getScheduleStatus,  ROW_HEIGHT,  STATUS_COLOR, TIMELINE_DAYS, TIMELINE_START } from "../utils/LineSchedule.utils";
 
 /* CONFIG */
-const VIEWPORT_HEIGHT = 400;   // Chiều cao viewport 
+const VIEWPORT_HEIGHT = 400;   // Chiều cao viewport
 const BUFFER = 2;              // Số row buffer
 
 /*PROPS*/
@@ -169,27 +146,27 @@ export default function LineScheduleGantt({
     [lines.length, visibleCount]
   );
 
-  const onScroll = useCallback(
-    (e: React.UIEvent<HTMLDivElement>) => {
-      const scrollTop = e.currentTarget.scrollTop;
+    const onScroll = useCallback(
+      (e: React.UIEvent<HTMLDivElement>) => {
+        const scrollTop = e.currentTarget.scrollTop;
 
-      // Tránh requestAnimationFrame chồng chéo
-      if (rafRef.current != null) return;
+        // Tránh requestAnimationFrame chồng chéo
+        if (rafRef.current != null) return;
 
-      rafRef.current = requestAnimationFrame(() => {
-        const nextRange = computeRange(scrollTop);
+        rafRef.current = requestAnimationFrame(() => {
+          const nextRange = computeRange(scrollTop);
 
-        setRange((prev) =>
-          prev.start === nextRange.start && prev.end === nextRange.end
-            ? prev
-            : nextRange
-        );
+          setRange((prev) =>
+            prev.start === nextRange.start && prev.end === nextRange.end
+              ? prev
+              : nextRange
+          );
 
-        rafRef.current = null;
-      });
-    },
-    [computeRange]
-  );
+          rafRef.current = null;
+        });
+      },
+      [computeRange]
+    );
 
   // Cleanup khi unmount
   useEffect(() => {
@@ -206,7 +183,7 @@ export default function LineScheduleGantt({
     [lines, range]
   );
 
-  /* Cache tasks cho các dòng đang hiển thị */
+  /* Memo hóa tasks theo lineId cho các dòng đang hiển thị */
   const tasksByLineId = useMemo(() => {
     const map = new Map<string, GanttTask[]>();
     for (const line of visibleLines) {
