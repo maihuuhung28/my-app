@@ -1,3 +1,4 @@
+//Mục Audit-Log lịch sử thay đổi của bảng 3 khi người dùng thao tác
 import { Badge, Button, Modal, Table } from "react-bootstrap";
 import "bootstrap/dist/css/bootstrap.min.css";
 import type { AuditLogItem } from "../../types/audit.types";
@@ -7,7 +8,7 @@ interface AuditLogProps {
   onClose: () => void;
   logs: AuditLogItem[];
 }
-
+  
 const formatTimestamp = (timestamp: string) =>
   new Date(timestamp).toLocaleString("en-GB", {
     year: "numeric",
@@ -53,7 +54,7 @@ export function AuditLog({ show, onClose, logs }: AuditLogProps) {
         <Table striped bordered hover responsive size="sm" className="mb-0">
           <thead className="table-light">
             <tr>
-              <th style={{ width: 170 }}>Time</th>
+              <th style={{ width: 170 }}>Time</th> 
               <th style={{ width: 120 }}>User</th>
               <th style={{ width: 100 }}>Role</th>
               <th style={{ width: 100 }}>Action</th>
@@ -69,7 +70,7 @@ export function AuditLog({ show, onClose, logs }: AuditLogProps) {
             {logs.length === 0 && (
               <tr>
                 <td colSpan={9} className="text-center text-muted py-4">
-                  No history change available
+                  No history change available / Chưa có Lịch Sử thay đổi
                 </td>
               </tr>
             )}
